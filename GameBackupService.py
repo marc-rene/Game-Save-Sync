@@ -29,12 +29,20 @@ class GameBackupService:
     ErrorStatus = ErrorType.all_good
     AppDataLocal = Path()
     ConfigPath = Path()
+    Games = list(Game)
     Config: None
 
     def SetDefaultEnvSettings(self):
         log.info(f"Appdata found at: {Path(os.getenv('LOCALAPPDATA'))}")
         self.AppDataLocal = Path(os.getenv('LOCALAPPDATA')) / "Game Save Sync"
         self.ConfigPath = self.AppDataLocal / "config.json"
+
+    def MakeselectionWindow():
+        pass
+
+    def LoadConfig() -> bool:
+        with open(self.ConfigPath.absolute()) as cfgFile:
+            
 
     def TestEnviorment(self):
         log.debug("Checking out enviorment")
@@ -54,6 +62,7 @@ class GameBackupService:
                     with open(self.ConfigPath.absolute()) as cfgFile:
                         self.Config = json.load(cfgFile)
                         log.debug(f"Config version: {self.Config["Version"]}")   
+
                 except Exception as cfgError:
                     log.warning(f"{self.ConfigPath.absolute()} is bollocksed because: {cfgError}")
                     self.ErrorStatus = ErrorType.no_config_detected
@@ -73,6 +82,8 @@ class GameBackupService:
         match(self.ErrorStatus):
             case ErrorType.appdata_permission_error:
                 exit(1)
+            case ErrorType.all_good:
+
             case _:
                 self.SetDefaultEnvSettings()
         
